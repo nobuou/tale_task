@@ -1,0 +1,78 @@
+# Compose fileのバージョン指定
+version: "3.9"
+services:
+# ---------------------------------
+# laravelを動かすコンテナ(LaravelMixを使うため、Nodeも一緒にインストールしているコンテナでもある)
+# ---------------------------------
+  php:
+    build: ./php
+    
+    volumes:
+      - ./../backend:/data
+
+    container_name: php_container
+
+  web:
+    image: nginx:1.20-alpine
+    container_name: nginx_container
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./../backend:/data
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx:/var/log/nginx
+    depends_on:
+      - php
+    working_dir: /data
+
+# ----------------------------------
+# MySQLを動かすコンテナ
+# ----------------------------------
+  database:
+    build: ./mysql
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/logs:/var/log/mysql
+    ports:
+      - '3306:3306'
+
+    container_name: mysql
+
+
+# ----------------------------------
+# phpMyAdminを動かすコンテナ
+# ----------------------------------
+  phpmyadmin:
+    # Docker Hubからイメージをダウンロード
+    image: phpmyadmin:latest
+
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=database
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    # コンテナの名前
+    container_name: phpmyadmin_tale-task
+
+    # コンテナと他のサービスを繋げる
+    depends_on:
+      - database
+
+    # localhost:4040 で phpmyadmin の管理画面にアクセス
+    ports:
+      - '4040:80'
+
+    # セッション情報をボリュームに設定して永続化
+    volumes:
+      - ./phpmyadmin/sessions:/sessions
+  
+  # ----------------------------------
+  # mail送信テストのためのコンテナ
+  # ----------------------------------
+  # localhost:8025 で mailhog の画面にアクセス
+  mail:
+    image: mailhog/mailhog
+    container_name: mail_tale-task
+    ports:
+      - '8025:8025'
+      - '1025:1025'
