@@ -1,0 +1,4 @@
+mysql/data
+mysql/logs
+nginx/error.log
+nginx/access.log
