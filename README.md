@@ -12,6 +12,7 @@ http://localhost:4040/
 http://localhost:8025/
 
 ## frontendサーバー起動方法
+npm install コマンドでnpm startを利用できる状態にする
 npm start
 
 ## frontendのアクセスURL
