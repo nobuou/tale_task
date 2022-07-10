@@ -10,3 +10,9 @@ http://localhost:4040/
 
 ## mailhogのアクセスURL
 http://localhost:8025/
+
+## frontendサーバー起動方法
+npm start
+
+## frontendのアクセスURL
+http://localhost:3000/
