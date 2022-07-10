@@ -1,11 +1,12 @@
 import "./App.css";
-import Button from "@mui/material/Button";
+import { HeaderLayout } from "./components/templates/HeaderLayout";
+import { Router } from "./router/Router";
 
 function App() {
   return (
-    <div className="App">
-      <Button variant="contained">Hello World</Button>
-    </div>
+    <HeaderLayout>
+      <Router />
+    </HeaderLayout>
   );
 }
 
