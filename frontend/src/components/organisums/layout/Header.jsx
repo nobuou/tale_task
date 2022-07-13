@@ -21,7 +21,7 @@ const pages = [
   <Link href="/setting" color="inherit" underline="hover">
     設定
   </Link>,
-  <Link href="/user" color="inherit" underline="hover">
+  <Link href="/post" color="inherit" underline="hover">
     ユーザー一覧
   </Link>,
 ];
