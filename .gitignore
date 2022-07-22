@@ -1,1 +1,3 @@
 .vscode
+docker-setting/nginx/access.log
+docker-setting/nginx/error.log
