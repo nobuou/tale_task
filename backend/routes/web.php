@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Register;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +17,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/top',function(){
+    return view('preRegister');
+});
+
+Route::post('/pre-register',[Register::class,'preRegister'])->name('pre');
+
+Route::get('/register',[HomeController::class,'showForm']);
+
+Route::post('/update',[Register::class,'register'])->name('honban');
+
+Route::get('/info', function(){
+    echo phpinfo();
 });
