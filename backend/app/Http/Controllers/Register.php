@@ -2,30 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\preRegisterRequest;
-use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\Auth\PreRegisterRequest as AuthPreRegisterRequest;
+use App\Http\Requests\Auth\RegisterRequest as AuthRegisterRequest;
 use App\Mail\preRegisterMail;
 use App\Mail\RegisterMail;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class Register extends Controller
 {
-    public function __construct(User $user)
-    {
-        $this->user = $user;
+    /**
+     * 仮登録
+     *
+     * @param AuthPreRegisterRequest $request
+     * @return void
+     */
+    public function preRegister(AuthPreRegisterRequest $request){
+        $validated = $request->validated();
+        $userService = app()->make('registerUser');
+        $user = $userService->preRegister($validated['email']);
+        $this->sendMail($user['email'],$user['email_token']);
+        return $userService->responseSuccess();
     }
 
-    public function preRegister(preRegisterRequest $request){
-        $validated = $request->validated();
-        $emailInfo = $this->user->emailRegister($validated['email']);
-        Mail::send(new preRegisterMail($emailInfo['email'],$emailInfo['email_token']));
+    /**
+     * 本登録用メール送信
+     *
+     * @param string $email
+     * @param string $token
+     */
+    private function sendMail($email,$token){
+        Mail::send(new preRegisterMail($email,$token));
     }
 
-    public function register(RegisterRequest $request){
+    //本登録
+    public function register(AuthRegisterRequest $request){
         $validated = $request->validated();
-        $this->user->register($validated['mailToken'],$validated['userName'],$validated['password']);
+        $userService = app()->make('registerUser');
+        $user = $userService->register($validated['mailToken'],$validated['userName'],$validated['password']);
         Mail::send(new RegisterMail($validated['mailAddress']));
+        return $userService->responseSuccess();
     }
 }
